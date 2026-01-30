@@ -23,10 +23,12 @@ The meshing is chosen to give a satisfactory error (below 5%) for the given numb
   - Athermal Recombination Corrected (ARC)
 
 <h2>Post-Processing</h2>
-FLAIR provides built-in post-processing tools that allow for quick 2D and 1D plotting of FLUKA outputs. Some examples: <br/> 
+FLAIR provides built-in post-processing tools that allow for quick 2D and 1D plotting of FLUKA outputs.<br/>
+Some examples include classis energy deposition histograms: <br/> 
 <img src="https://i.imgur.com/KVr7KxF.png" height="80%" width="80%" alt="Energy Deposition in Tungsten"/> 
 <img src="https://i.imgur.com/J6wmqPO.png" height="80%" width="80%" alt="Maximum Energy Deposition in Tungsten"/>
-However, manipulating data in FLAIR is rather inconvenient. For additional post-processing tools, see the FLUKA Post-Processing repository. 
+
+However, manipulating data in FLAIR is rather inconvenient. For additional post-processing tools, see the [FLUKA Post-Processing](https://github.com/katerynahavryshchuk/FLUKA-Post-Processing) repository. 
 <!--
  ```diff
 - text in red
