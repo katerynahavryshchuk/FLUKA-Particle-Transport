@@ -1,0 +1,126 @@
+TITLE
+Mu2e Beam on a Cylindrical Target
+*Set the defaults for precision simulations
+DEFAULTS                                                              PRECISIO
+*Define the beam characteristics
+!@what.2=-8.889*0.01*2.355
+!@what.4=-0.1*2.355
+!@what.5=-0.1*2.355
+BEAM            -8.0 -0.209336         0   -0.2355   -0.2355          PROTON
+*Define the beam position
+BEAMPOS            0         0
+GEOBEGIN                                                              COMBNAME
+    0    0          
+*Black body
+SPH blkbody    0.0 0.0 0.0 100000.0
+*Void sphere
+SPH void       0 0 0 10000.0
+RCC target     0 0 0 0 0 16 0.314
+END
+*Black hole
+BLKBODY      5 +blkbody -void
+*Void around
+VOID         5 +void -target
+TARGET       5 +target
+END
+GEOEND
+PHYSICS            3                                                  EVAPORAT
+PHYSICS            1                                                  COALESCE
+PHYSICS        20000     20000     20000     20000     20000     20000PEATHRES
+PHYSICS            1     0.005      0.15         2         2         3IONSPLIT
+PHOTONUC           1                      BLCKHOLE  @LASTMAT
+PHOTONUC        1111      0.05            BLCKHOLE  @LASTMAT          MUMUPAIR
+MUPHOTON           1                      BLCKHOLE  @LASTMAT
+!@what.3=80*keV
+PAIRBREM           3       0.0     8.E-5  BLCKHOLE  @LASTMAT
+!@what.1=-100*keV
+!@what.2=80*keV
+EMFCUT        -1.E-4     8.E-5        1.    VACUUM  @LASTMAT          PROD-CUT
+!@what.1=-100*keV
+!@what.2=80*keV
+EMFCUT        -1.E-4     8.E-5             BLKBODY  @LASTREG
+IONTRANS    HEAVYION
+LAM-BIAS         0.0      0.05  TUNGSTEN    PHOTON    PHOTON          INEALL
+LAM-BIAS         0.0      0.05  TITANIUM    PHOTON    PHOTON          INEALL
+LAM-BIAS         0.0      0.05  Graphite    PHOTON    PHOTON          INEALL
+LAM-BIAS         0.0      0.05  Stainles    PHOTON    PHOTON          INEALL
+LAM-BIAS         0.0      0.05    Inc718    PHOTON    PHOTON          INEALL
+MATERIAL           6                  2.                              Graphite
+MATERIAL          24                7.18                              CHROMIUM
+*Stainless-Steel (typical)
+*Stainless-Steel is produced with Cr content ranging from
+*4 - 19 Atomic Percent, and with C content from 0 - 4 percent.
+MATERIAL                             8.0                              Stainles
+COMPOUND        18.0  CHROMIUM      74.0      IRON       8.0    NICKELStainles
+MATERIAL          41                8.57                              NIOBIUM
+MATERIAL          42               10.22                              MOLYBDEN
+MATERIAL          27                 8.9                              COBALT
+MATERIAL          25                7.44                              MANGANES
+MATERIAL                            8.20                              Inc718
+COMPOUND      -53.28    NICKEL      -1.0    COBALT    -20.72  CHROMIUMInc718
+COMPOUND        -0.5  ALUMINUM     -14.5      IRON     -0.35  MANGANESInc718
+COMPOUND        -5.0   NIOBIUM     -0.35   SILICON      -3.0  MOLYBDENInc718
+COMPOUND        -0.3    COPPER      -1.0  TITANIUM                    Inc718
+MATERIAL          74                19.3                              TUNGSTEN
+MAT-PROP                           727.0  TUNGSTEN
+MAT-PROP        70.0     -0.56      0.12  TUNGSTEN                    DPA-ENER
+STERNHEI      5.4059    0.2167     3.496   0.15509    2.8447      0.14TUNGSTEN
+MAT-PROP                           272.0  MANGANES
+MAT-PROP        40.0                      MANGANES                    DPA-ENER
+STERNHEI      4.2702    0.0447    3.1074   0.14973    2.9796      0.14MANGANES
+MAT-PROP                           297.0    COBALT
+MAT-PROP        40.0                        COBALT                    DPA-ENER
+STERNHEI      4.2601   -0.0187     3.179   0.14474    2.9502      0.12COBALT
+MAT-PROP                           424.0  MOLYBDEN
+MAT-PROP        60.0                      MOLYBDEN                    DPA-ENER
+STERNHEI      4.8793    0.2267    3.2784   0.10525    3.2549      0.14MOLYBDEN
+MAT-PROP                           417.0   NIOBIUM
+MAT-PROP        40.0                       NIOBIUM                    DPA-ENER
+STERNHEI      5.0141    0.1785    3.2201   0.13883     3.093      0.14NIOBIUM
+MAT-PROP        31.0                      Graphite                    DPA-ENER
+*..+....1....+....2....+....3....+....4....+....5....+....6....+....7..
+ASSIGNMA    BLCKHOLE   BLKBODY
+ASSIGNMA      VACUUM      VOID
+ASSIGNMA    TUNGSTEN    TARGET
+*The total energy deposited by all particle species
+USRBIN             1    ENERGY       -62     0.314                  16EnTot
+USRBIN             0                   0        32                 320 &
+*The energy deposited by distinct particle species
+USRBIN             1    ENERGY       -62     0.314                  16EnProts
+USRBIN             0                   0        32                 320 &
+USRBIN             1    ENERGY       -62     0.314                  16EnBProts
+USRBIN             0                   0        32                 320 &
+USRBIN             1    ENERGY       -62     0.314                  16EnElects
+USRBIN             0                   0        32                 320 &
+USRBIN             1    ENERGY       -62     0.314                  16EnPhot
+USRBIN             0                   0        32                 320 &
+AUXSCORE      USRBIN    PROTON             EnProts
+AUXSCORE      USRBIN  BEAMPART            EnBProts
+AUXSCORE      USRBIN  ELECTRON            EnElects
+AUXSCORE      USRBIN    PHOTON              EnPhot
+*Below cards are for scoring energy deposition from various ions
+USRBIN             1    ENERGY       -62     0.314                  16EnDEUTERON
+USRBIN             0                   0        32                 320 &
+USRBIN             1    ENERGY       -62     0.314                  16EnTRITON
+USRBIN             0                   0        32                 320 &
+USRBIN             1    ENERGY       -62     0.314                  16EnHELIUM-4
+USRBIN             0                   0        32                 320 &
+USRBIN             1    ENERGY       -62     0.314                  16EnHELIUM-3
+USRBIN             0                   0        32                 320 &
+USRBIN             1    ENERGY       -62     0.314                  16EnHEAVY
+USRBIN             0                   0        32                 320 &
+AUXSCORE      USRBIN  DEUTERON          EnDEUTERON
+AUXSCORE      USRBIN    TRITON            EnTRITON
+AUXSCORE      USRBIN  4-HELIUM          EnHELIUM-4
+AUXSCORE      USRBIN  3-HELIUM          EnHELIUM-3
+AUXSCORE      USRBIN  HEAVYION             EnHEAVY
+*The following USERBIN cards are for DPA scoring
+USRBIN            11   DPA-NRT       -44     0.314                  16DPA-NRT
+USRBIN             0                   0        16                 160 &
+USRBIN            11   ARC-DPA       -45     0.314                  16ARC-DPA
+USRBIN             0                   0        16                 160 &
+*Set the random number seed
+RANDOMIZ         1.0
+*Set the number of primary histories to be simulated in the run
+START         200000
+STOP

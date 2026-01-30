@@ -1,0 +1,1217 @@
+# flair project file
+Version: 300
+Mode: fluka
+Title: Mu2e Beam on a Cylindrical Target
+md5: 1760ce8e73ddf91bbb2c874c5f8ea493
+Input:
+TITLE
+	Mu2e Beam on a Cylindrical Target
+*Set the defaults for precision simulations
+DEFAULTS PRECISIO
+*Define the beam characteristics
+BEAM PROTON -8.0 =-8.889*0.01*2.355 0 =-0.1*2.355 =-0.1*2.355
+*Define the beam position
+BEAMPOS , 0 0
+GEOBEGIN COMBNAME
+*Black body
+SPH blkbody 0.0 0.0 0.0 100000.0
+	@select=8
+*Void sphere
+SPH void 0 0 0 10000.0
+	@select=8
+RCC target 0 0 0 0 0 16 0.314
+	@select=8
+END
+*Black hole
+REGION BLKBODY 5
+	+blkbody -void
+	@select=8
+*Void around
+REGION VOID 5
+	+void -target
+REGION TARGET
+	+target
+END
+GEOEND
+PHYSICS EVAPORAT 3
+PHYSICS COALESCE 1
+PHYSICS PEATHRES 20000 20000 20000 20000 20000 20000
+PHYSICS IONSPLIT 1 0.005 0.15 2 2 3
+PHOTONUC , 1,,, BLCKHOLE @LASTMAT
+PHOTONUC MUMUPAIR 1111 0.05,, BLCKHOLE @LASTMAT
+MUPHOTON , 1,,, BLCKHOLE @LASTMAT
+PAIRBREM , 3 0.0 =80*keV BLCKHOLE @LASTMAT
+EMFCUT PROD-CUT =-100*keV =80*keV 1. VACUUM @LASTMAT
+EMFCUT , =-100*keV =80*keV,, BLKBODY @LASTREG
+IONTRANS , HEAVYION
+LAM-BIAS INEALL 0.0 0.05 TUNGSTEN PHOTON PHOTON
+LAM-BIAS INEALL 0.0 0.05 TITANIUM PHOTON PHOTON
+LAM-BIAS INEALL 0.0 0.05 Graphite PHOTON PHOTON
+LAM-BIAS INEALL 0.0 0.05 Stainles PHOTON PHOTON
+LAM-BIAS INEALL 0.0 0.05 Inc718 PHOTON PHOTON
+MATERIAL Graphite 6,, 2.
+MATERIAL CHROMIUM 24,, 7.18
+*Stainless-Steel (typical)
+*Stainless-Steel is produced with Cr content ranging from
+*4 - 19 Atomic Percent, and with C content from 0 - 4 percent.
+MATERIAL Stainles,,, 8.0
+COMPOUND Stainles 18.0 CHROMIUM 74.0 IRON 8.0 NICKEL
+MATERIAL NIOBIUM 41,, 8.57
+MATERIAL MOLYBDEN 42,, 10.22
+MATERIAL COBALT 27,, 8.9
+MATERIAL MANGANES 25,, 7.44
+MATERIAL Inc718,,, 8.20
+COMPOUND Inc718 -53.28 NICKEL -1.0 COBALT -20.72 CHROMIUM -0.5 ALUMINUM -14.5 IRON \
+	 -0.35 MANGANES -5.0 NIOBIUM -0.35 SILICON -3.0 MOLYBDEN -0.3 COPPER \
+	 -1.0 TITANIUM
+MATERIAL TUNGSTEN 74,, 19.3
+MAT-PROP ,,, 727.0 TUNGSTEN
+MAT-PROP DPA-ENER 70.0 -0.56 0.12 TUNGSTEN
+STERNHEI TUNGSTEN 5.4059 0.2167 3.496 0.15509 2.8447 0.14
+MAT-PROP ,,, 272.0 MANGANES
+MAT-PROP DPA-ENER 40.0,,, MANGANES
+STERNHEI MANGANES 4.2702 0.0447 3.1074 0.14973 2.9796 0.14
+MAT-PROP ,,, 297.0 COBALT
+MAT-PROP DPA-ENER 40.0,,, COBALT
+STERNHEI COBALT 4.2601 -0.0187 3.179 0.14474 2.9502 0.12
+MAT-PROP ,,, 424.0 MOLYBDEN
+MAT-PROP DPA-ENER 60.0,,, MOLYBDEN
+STERNHEI MOLYBDEN 4.8793 0.2267 3.2784 0.10525 3.2549 0.14
+MAT-PROP ,,, 417.0 NIOBIUM
+MAT-PROP DPA-ENER 40.0,,, NIOBIUM
+STERNHEI NIOBIUM 5.0141 0.1785 3.2201 0.13883 3.093 0.14
+MAT-PROP DPA-ENER 31.0,,, Graphite
+*..+....1....+....2....+....3....+....4....+....5....+....6....+....7..
+ASSIGNMA , BLCKHOLE BLKBODY
+ASSIGNMA , VACUUM VOID
+ASSIGNMA , TUNGSTEN TARGET
+*The total energy deposited by all particle species
+USRBIN EnTot 1 ENERGY -62 0.314,, 16 0,, 0 32,, 320
+*The energy deposited by distinct particle species
+USRBIN EnProts 1 ENERGY -62 0.314,, 16 0,, 0 32,, 320
+USRBIN EnBProts 1 ENERGY -62 0.314,, 16 0,, 0 32,, 320
+USRBIN EnElects 1 ENERGY -62 0.314,, 16 0,, 0 32,, 320
+USRBIN EnPhot 1 ENERGY -62 0.314,, 16 0,, 0 32,, 320
+AUXSCORE , USRBIN PROTON,, EnProts
+AUXSCORE , USRBIN BEAMPART,, EnBProts
+AUXSCORE , USRBIN ELECTRON,, EnElects
+AUXSCORE , USRBIN PHOTON,, EnPhot
+*Below cards are for scoring energy deposition from various ions
+USRBIN EnDEUTERON 1 ENERGY -62 0.314,, 16 0,, 0 32,, 320
+USRBIN EnTRITON 1 ENERGY -62 0.314,, 16 0,, 0 32,, 320
+USRBIN EnHELIUM-4 1 ENERGY -62 0.314,, 16 0,, 0 32,, 320
+USRBIN EnHELIUM-3 1 ENERGY -62 0.314,, 16 0,, 0 32,, 320
+USRBIN EnHEAVY 1 ENERGY -62 0.314,, 16 0,, 0 32,, 320
+AUXSCORE , USRBIN DEUTERON,, EnDEUTERON
+AUXSCORE , USRBIN TRITON,, EnTRITON
+AUXSCORE , USRBIN 4-HELIUM,, EnHELIUM-4
+AUXSCORE , USRBIN 3-HELIUM,, EnHELIUM-3
+AUXSCORE , USRBIN HEAVYION,, EnHEAVY
+*The following USERBIN cards are for DPA scoring
+USRBIN DPA-NRT 11 DPA-NRT -44 0.314,, 16 0,, 0 16,, 160
+USRBIN ARC-DPA 11 ARC-DPA -45 0.314,, 16 0,, 0 16,, 160
+*Set the random number seed
+RANDOMIZ , 1.0
+*Set the number of primary histories to be simulated in the run
+START , 200000
+STOP
+EndInput
+
+Notes:
+	|In this simulation, we run a standard Mu2e beam on a cylindrical target with high precision and in cylindrical coordinates. 
+	|Each cycle has 200,000 primaries with 5 cycles total. The meshing is 32 divisions per R and 320 divisions per z.
+Page: Input
+plotengine: Gnuplot
+
+# Run information
+Run: <default>
+	Status:   3
+	StartRun: 1769383029.490519
+	open:     1
+End
+Geometry: Geometry
+	Frame.bsplit: 0.5015673981191222
+	Frame.tsplit: 0.39935691318327976
+	Frame.vsplit: 0.5350785340314136
+	Layer: 3D
+		3D: 1
+		3D._visible: 1
+		3D.background: 1
+		3D.edgedetect: 1
+		Options.grid: 0
+		Options.gridlevel: 12
+		Options.viewport: 0
+		Show: 0
+		Show.lattice: 2
+		Show.voxel: 2
+	End
+	Layer: OpenGL
+		GL: 1
+		GL._visible: 1
+		Options.gridlevel: 12
+		Options.viewport: 0
+		Show: 0
+		Show.lattice: 2
+		Show.voxel: 2
+	End
+	Layer: Mesh Visual
+		Options.grid: 0
+		Palette._visible: 1
+		Show.label: None
+		Usrbin: 1
+		Usrbin._visible: 1
+		Usrbin.input: 1
+		Usrbin.xofs: 0.0
+		Usrbin.yofs: 0.0
+	End
+	Layer: Mesh Visual 3D
+		3D: 1
+		3D._visible: 1
+		3D.ambient: 7
+		3D.background: 1
+		3D.edgedetect: 1
+		Options.grid: 0
+		Options.gridlevel: 12
+		Options.viewport: 0
+		Palette._visible: 1
+		Show: 0
+		Show.lattice: 2
+		Show.voxel: 2
+		Usrbin: 1
+		Usrbin._visible: 1
+		Usrbin.input: 1
+		Usrbin.xofs: 0.0
+		Usrbin.yofs: 0.0
+	End
+End
+
+# Plots information
+Plot: Red
+	Type: Geometry
+	basisu: 0 0 1
+	basisv: 1 0 0
+	coord: Z-X
+	extends: 9.346387898717914 7.284463354234252
+	group: Geometry
+	layer: Lattice
+	origin: 0.0914394 0 7.29559
+End
+Plot: Green
+	Type: Geometry
+	basisu: -0.981052 0.0157299 0.193103
+	basisv: 0.0180548 0.999784 0.0102859
+	extends: 2.1736711087157365 1.126399161261688
+	group: Geometry
+	layer: Mesh Visual 3D
+	origin: -1.5927 0.117402 0.0697212
+End
+Plot: Blue
+	Type: Geometry
+	basisu: 0 0 1
+	coord: Z-Y
+	extends: 9.346387898717921 4.996722761237658
+	group: Geometry
+	layer: Lattice
+	origin: 0.05 -1.95819 7.19655
+End
+Plot: Magenta
+	Type: Geometry
+	coord: X-Y
+	extends: 0.7279580562775068 0.39168839931318755
+	group: Geometry
+	layer: Mesh Visual
+	origin: -0.0275708 -0.0229382 0
+End
+Plot: Tungsten EnergyDep
+	Type: USRBIN
+	cbcolor: white
+	cbcpd: 0
+	cblabel: Energy Dep [J / cm^3]
+	cblog: 1
+	cbmax: 1450
+	cbmin: 25
+	cbpalette: matlab
+	cbtics: 1
+	cbticsfont: Times
+	cbticssize: 10
+	datafile: Axisymmetric_Mesh_21.bnn
+	grid: 0
+	hist: 2D Projection
+	norm: 1.6e-10*1e13
+	open: 1
+	proj: Y
+	title: Energy Deposition in Tungsten / One Mu2e Beam Cycle [Axisymmetric Mesh]
+	titlecolor: white
+	xcolor: white
+	xlabel: z [cm]
+	xmax: 16
+	xmin: 0
+	ycolor: white
+	ylabel: R [cm]
+	ymax: 0.314
+	ymin: 0
+	yticsfont: Times
+	yticssize: 10
+End
+Plot: Tungsten EnergyDep Error
+	Type: USRBIN
+	cbcpd: 0
+	cblog: 1
+	cbtics: 1
+	datafile: Axisymmetric_Mesh_21.bnn
+	grid: 0
+	hist: 1D Max
+	norm: 1.6e-10*1.25e12
+	open: 1
+	title: Maximum Energy Deposition in Tungsten  / One Mu2e Beam Cycle [Axisymmetric Mesh]
+	xlabel: z [cm]
+	xmax: 16
+	xmin: 0
+	ylabel: Energy Dep [J / cm^3]
+End
+Plot: Tungsten DPA-NRT
+	Type: USRBIN
+	cbcpd: 0
+	cblabel: DPA/year
+	cblog: 1
+	cbtics: 1
+	datafile: Axisymmetric_Mesh_40.bnn
+	grid: 0
+	group: Tungsten DPA
+	hist: 2D Projection
+	norm: 1e20
+	proj: Y
+	title: DRA-NRT for Tungsten Per Year of Running the Mu2e Beam
+	xlabel: z [cm]
+	xmax: 16
+	xmin: 0
+	ylabel: R [cm]
+	ymax: 0.314
+	ymin: 0
+End
+Plot: Tungsten DPA-NRT Error
+	Type: USRBIN
+	cbcpd: 0
+	cblog: 1
+	cbtics: 1
+	datafile: Axisymmetric_Mesh_40.bnn
+	grid: 0
+	group: Tungsten DPA
+	hist: 1D Max
+	norm: 1e20
+	title: Maximum DRA-NRT for Tungsten Per Year of Running the Mu2e Beam
+	xlabel: z [cm]
+	xmax: 16
+	xmin: 0
+	ylabel: DPA/year
+End
+Plot: Tungsten ARC-DPA
+	Type: USRBIN
+	cbcpd: 0
+	cblabel: DPA/year
+	cblog: 1
+	cbtics: 1
+	datafile: Axisymmetric_Mesh_41.bnn
+	grid: 0
+	group: Tungsten DPA
+	hist: 2D Projection
+	norm: 1e20
+	proj: Y
+	title: ARC-DRA for Tungsten Per Year of Running the Mu2e Beam
+	xlabel: z [cm]
+	xmax: 16
+	xmin: 0
+	ylabel: R [cm]
+	ymax: 0.314
+	ymin: 0
+End
+Plot: Tungsten ARC-DPA Error
+	Type: USRBIN
+	cbcpd: 0
+	cblog: 1
+	cbtics: 1
+	datafile: Axisymmetric_Mesh_41.bnn
+	grid: 0
+	group: Tungsten DPA
+	hist: 1D Max
+	norm: 1e20
+	title: Maximum ARC-DRA for Tungsten Per Year of Running the Mu2e Beam
+	xlabel: z [cm]
+	xmax: 16
+	xmin: 0
+	ylabel: DPA/year
+End
+Plot: Inconel-718 EnergyDep
+	Type: USRBIN
+	cbcpd: 0
+	cblog: 1
+	cbmax: 545
+	cbmin: 5
+	cbpalette: matlab
+	cbtics: 1
+	cbticsfont: Times
+	cbticssize: 10
+	datafile: Axisymmetric_Mesh_22.bnn
+	grid: 0
+	hist: 2D Projection
+	norm: 1.6e-10*1e13
+	open: 1
+	proj: Y
+	xmax: 16
+	xmin: 0
+	xticsfont: Times
+	xticssize: 10
+	ymax: 0.314
+	ymin: 0
+	yticsfont: Times
+	yticssize: 10
+End
+Plot: Inconel-718 EnergyDep Error
+	Type: USRBIN
+	cbcpd: 0
+	cblog: 1
+	cbtics: 1
+	datafile: Axisymmetric_Mesh_22.bnn
+	grid: 0
+	hist: 1D Max
+	lc.0: salmon
+	norm: 1.6e-10*1e13
+	open: 1
+	pt.0: 6
+	with.0: errorbars
+	xmax: 16
+	xmin: 0
+End
+Plot: Inconel-718 DPA-NRT
+	Type: USRBIN
+	cbcpd: 0
+	cblabel: DPA/year
+	cblog: 1
+	cbtics: 1
+	datafile: Axisymmetric_Mesh_42.bnn
+	grid: 0
+	group: Inconel DPA
+	hist: 2D Projection
+	norm: 1e20
+	proj: Y
+	title: DRA-NRT for Inconel Per Year of Running the Mu2e Beam
+	xlabel: z [cm]
+	xmax: 16
+	xmin: 0
+	ylabel: R [cm]
+	ymax: 0.314
+	ymin: 0
+End
+Plot: Inconel-718 DPA-NRT Error
+	Type: USRBIN
+	cbcpd: 0
+	cblog: 1
+	cbtics: 1
+	datafile: Axisymmetric_Mesh_42.bnn
+	grid: 0
+	group: Inconel DPA
+	hist: 1D Max
+	norm: 1e20
+	title: Maximum DRA-NRT for Inconel Per Year of Running the Mu2e Beam
+	xlabel: z [cm]
+	xmax: 16
+	xmin: 0
+	ylabel: DPA/year
+End
+Plot: Inconel-718 ARC-DPA
+	Type: USRBIN
+	cbcpd: 0
+	cblabel: DPA/year
+	cblog: 1
+	cbtics: 1
+	datafile: Axisymmetric_Mesh_43.bnn
+	grid: 0
+	group: Inconel DPA
+	hist: 2D Projection
+	norm: 1e20
+	proj: Y
+	title: ARC-DRA for Inconel Per Year of Running the Mu2e Beam
+	xlabel: z [cm]
+	xmax: 16
+	xmin: 0
+	ylabel: R [cm]
+	ymax: 0.314
+	ymin: 0
+End
+Plot: Inconel-718 ARC-DPA Error
+	Type: USRBIN
+	cbcpd: 0
+	cblog: 1
+	cbtics: 1
+	datafile: Axisymmetric_Mesh_43.bnn
+	grid: 0
+	group: Inconel DPA
+	hist: 1D Max
+	norm: 1e20
+	title: Maximum ARC-DRA for Inconel Per Year of Running the Mu2e Beam
+	xlabel: z [cm]
+	xmax: 16
+	xmin: 0
+	ylabel: DPA/year
+End
+Plot: Graphite EnergyDep
+	Type: USRBIN
+	cbcpd: 0
+	cblog: 1
+	cbmax: 120
+	cbmin: 0.4
+	cbpalette: matlab
+	cbtics: 1
+	cbticsfont: Times
+	cbticssize: 10
+	datafile: Axisymmetric_Mesh_23.bnn
+	grid: 0
+	hist: 2D Projection
+	norm: 1.6e-10*1e13
+	open: 1
+	proj: Y
+	xmax: 16
+	xmin: 0
+	xticsfont: Times
+	xticssize: 10
+	ymax: 0.314
+	ymin: 0
+	yticsfont: Times
+	yticssize: 10
+End
+Plot: Graphite EnergyDep Error
+	Type: USRBIN
+	cbcpd: 0
+	cblog: 1
+	cbtics: 1
+	datafile: Axisymmetric_Mesh_23.bnn
+	grid: 0
+	hist: 1D Max
+	lc.0: salmon
+	norm: 1.6e-10*1e13
+	open: 1
+	pt.0: 6
+	with.0: errorbars
+	xmax: 16
+	xmin: 0
+	xticsfont: Times
+	xticssize: 10
+	yticsfont: Times
+	yticssize: 10
+End
+Plot: Graphite DPA-NRT
+	Type: USRBIN
+	cbcpd: 0
+	cblabel: DPA/year
+	cblog: 1
+	cbtics: 1
+	datafile: Axisymmetric_Mesh_44.bnn
+	grid: 0
+	group: Grahite DPA
+	hist: 2D Projection
+	norm: 1e20
+	proj: Y
+	title: DRA-NRT for Graphite Per Year of Running the Mu2e Beam
+	xlabel: z [cm]
+	xmax: 16
+	xmin: 0
+	ylabel: R [cm]
+	ymax: 0.314
+	ymin: 0
+End
+Plot: Graphite DPA-NRT Error
+	Type: USRBIN
+	cbcpd: 0
+	cblog: 1
+	cbtics: 1
+	datafile: Axisymmetric_Mesh_44.bnn
+	grid: 0
+	group: Grahite DPA
+	hist: 1D Max
+	norm: 1e20
+	title: Maximum DRA-NRT for Graphite Per Year of Running the Mu2e Beam
+	xlabel: z [cm]
+	xmax: 16
+	xmin: 0
+	ylabel: DPA/year
+End
+Plot: Graphite ARC-DPA
+	Type: USRBIN
+	cbcpd: 0
+	cblabel: DPA/year
+	cblog: 1
+	cbtics: 1
+	datafile: Axisymmetric_Mesh_45.bnn
+	grid: 0
+	group: Grahite DPA
+	hist: 2D Projection
+	norm: 1e20
+	proj: Y
+	title: ARC-DRA for Graphite Per Year of Running the Mu2e Beam
+	xlabel: z [cm]
+	xmax: 16
+	xmin: 0
+	ylabel: R [cm]
+	ymax: 0.314
+	ymin: 0
+End
+Plot: Graphite ARC-DPA Error
+	Type: USRBIN
+	cbcpd: 0
+	cblog: 1
+	cbtics: 1
+	datafile: Axisymmetric_Mesh_45.bnn
+	grid: 0
+	group: Grahite DPA
+	hist: 1D Max
+	norm: 1e20
+	title: Maximum ARC-DRA for Graphite Per Year of Running the Mu2e Beam
+	xlabel: z [cm]
+	xmax: 16
+	xmin: 0
+	ylabel: DPA/year
+End
+Plot: Tungsten EnergyDep Protons
+	Type: USRBIN
+	cbcpd: 0
+	cblog: 1
+	cbmax: 1450
+	cbmin: 25
+	cbpalette: matlab
+	cbtics: 1
+	datafile: Axisymmetric_Mesh_51.bnn
+	grid: 0
+	group: Tungsten Energy Dep Diff Particles
+	hist: 2D Projection
+	norm: 1.6e-10*1e13
+	open: 1
+	proj: Y
+	title: Energy Deposited to the Tungsten Target by Protons
+	titlecolor: white
+	xmax: 16
+	xmin: 0
+	xticsfont: Times
+	xticssize: 10
+	ymax: 0.314
+	ymin: 0
+	yticsfont: Times
+	yticssize: 10
+End
+Plot: Tungsten EnergyDep Beam Protons
+	Type: USRBIN
+	cbcpd: 0
+	cblog: 1
+	cbmax: 1450
+	cbmin: 25
+	cbpalette: matlab
+	cbtics: 1
+	datafile: Axisymmetric_Mesh_51.bnn
+	det: 6
+	grid: 0
+	group: Tungsten Energy Dep Diff Particles
+	hist: 2D Projection
+	norm: 1.6e-10*1e13
+	open: 1
+	proj: Y
+	title: Energy Deposited to the Tungsten Target by Beam Protons
+	titlecolor: white
+	xmax: 16
+	xmin: 0
+	xticsfont: Times
+	xticssize: 10
+	ymax: 0.314
+	ymin: 0
+	yticsfont: Times
+	yticssize: 10
+End
+Plot: Tungsten EnergyDep Neutrons
+	Type: USRBIN
+	cbcpd: 0
+	cblog: 1
+	cbpalette: matlab
+	cbtics: 1
+	datafile: Axisymmetric_Mesh_51.bnn
+	det: 2
+	grid: 0
+	group: Tungsten Energy Dep Diff Particles
+	hist: 2D Projection
+	norm: 1.6e-10*1e13
+	open: 1
+	proj: Y
+	title: Energy Deposited to the Tungsten Target by Neutrons
+	titlecolor: white
+	xmax: 16
+	xmin: 0
+	xticsfont: Times
+	xticssize: 10
+	ymax: 0.314
+	ymin: 0
+	yticsfont: Times
+	yticssize: 10
+End
+Plot: Tungsten EnergyDep Electrons
+	Type: USRBIN
+	cbcpd: 0
+	cblog: 1
+	cbmax: 1450
+	cbmin: 25
+	cbpalette: matlab
+	cbtics: 1
+	datafile: Axisymmetric_Mesh_51.bnn
+	det: 3
+	grid: 0
+	group: Tungsten Energy Dep Diff Particles
+	hist: 2D Projection
+	norm: 1.6e-10*1e13
+	open: 1
+	proj: Y
+	title: Energy Deposited to the Tungsten Target by Electrons
+	titlecolor: white
+	xmax: 16
+	xmin: 0
+	xticsfont: Times
+	xticssize: 10
+	ymax: 0.314
+	ymin: 0
+	yticsfont: Times
+	yticssize: 10
+End
+Plot: Tungsten EnergyDep Photons
+	Type: USRBIN
+	cbcpd: 0
+	cblog: 1
+	cbpalette: matlab
+	cbtics: 1
+	datafile: Axisymmetric_Mesh_51.bnn
+	det: 4
+	grid: 0
+	group: Tungsten Energy Dep Diff Particles
+	hist: 2D Projection
+	norm: 1.6e-10*1e13
+	open: 1
+	proj: Y
+	title: Energy Deposited to the Tungsten Target by Photons
+	titlecolor: white
+	xmax: 16
+	xmin: 0
+	xticsfont: Times
+	xticssize: 10
+	ymax: 0.314
+	ymin: 0
+	yticsfont: Times
+	yticssize: 10
+End
+Plot: Tungsten EnergyDep HeavyLightIons
+	Type: USRBIN
+	cbcpd: 0
+	cblog: 1
+	cbmax: 80
+	cbmin: 0.02
+	cbpalette: matlab
+	cbtics: 1
+	datafile: Axisymmetric_Mesh_51.bnn
+	det: 5
+	grid: 0
+	group: Tungsten Energy Dep Diff Particles
+	hist: 1D Max
+	norm: 1.6e-10*1e13
+	open: 1
+	title: Energy Deposited to the Tungsten Target by Heavy+Light Ions
+	titlecolor: white
+	xmax: 16
+	xmin: 0
+	xticsfont: Times
+	xticssize: 10
+	yticsfont: Times
+	yticssize: 10
+End
+Plot: Tungsten EnergyDep HeavyIons
+	Type: USRBIN
+	cbcpd: 0
+	cblog: 1
+	cbmax: 80
+	cbmin: 0.02
+	cbpalette: matlab
+	cbtics: 1
+	datafile: Axisymmetric_Mesh_56.bnn
+	det: 2
+	grid: 0
+	group: Tungsten Energy Dep Diff Particles
+	hist: 2D Projection
+	norm: 1.6e-10*1e13
+	open: 1
+	proj: Y
+	title: Energy Deposited to the Tungsten Target by Heavy Ions
+	titlecolor: white
+	xmax: 16
+	xmin: 0
+	xticsfont: Times
+	xticssize: 10
+	yticsfont: Times
+	yticssize: 10
+End
+Plot: Tungsten EnergyDep LightIons
+	Type: USRBIN
+	cbcpd: 0
+	cblog: 1
+	cbmax: 80
+	cbmin: 0.02
+	cbpalette: matlab
+	cbtics: 1
+	datafile: Axisymmetric_Mesh_56.bnn
+	grid: 0
+	group: Tungsten Energy Dep Diff Particles
+	hist: 2D Projection
+	norm: 1.6e-10*1e13
+	open: 1
+	proj: Y
+	title: Energy Deposited to the Tungsten Target by Light Ions
+	titlecolor: white
+	xmax: 16
+	xmin: 0
+	xticsfont: Times
+	xticssize: 10
+	ymax: 0.314
+	ymin: 0
+	yticsfont: Times
+	yticssize: 10
+End
+Plot: Inconel EnergyDep Protons
+	Type: USRBIN
+	cbcpd: 0
+	cblog: 1
+	cbmax: 545
+	cbmin: 5
+	cbpalette: matlab
+	cbtics: 1
+	datafile: Axisymmetric_Mesh_52.bnn
+	grid: 0
+	group: Inconel Energy Dep Diff Particles
+	hist: 2D Projection
+	norm: 1.6e-10*1e13
+	proj: Y
+	title: Energy Deposited to the Inconel Target by Protons
+	titlecolor: white
+	xmax: 16
+	xmin: 0
+	xticsfont: Times
+	xticssize: 10
+	ymax: 0.314
+	ymin: 0
+	yticsfont: Times
+	yticssize: 10
+End
+Plot: Inconel EnergyDep Beam Protons
+	Type: USRBIN
+	cbcpd: 0
+	cblog: 1
+	cbmax: 545
+	cbmin: 5
+	cbpalette: matlab
+	cbtics: 1
+	datafile: Axisymmetric_Mesh_52.bnn
+	det: 6
+	grid: 0
+	group: Inconel Energy Dep Diff Particles
+	hist: 2D Projection
+	norm: 1.6e-10*1e13
+	proj: Y
+	title: Energy Deposited to the Inconel Target by Beam Protons
+	titlecolor: white
+	xmax: 16
+	xmin: 0
+	xticsfont: Times
+	xticssize: 10
+	ymax: 0.314
+	ymin: 0
+	yticsfont: Times
+	yticssize: 10
+End
+Plot: Inconel EnergyDep Neutrons
+	Type: USRBIN
+	cbcpd: 0
+	cblog: 1
+	cbpalette: matlab
+	cbtics: 1
+	datafile: Axisymmetric_Mesh_52.bnn
+	det: 2
+	grid: 0
+	group: Inconel Energy Dep Diff Particles
+	hist: 2D Projection
+	norm: 1.6e-10*1e13
+	proj: Y
+	title: Energy Deposited to the Inconel Target by Neutrons
+	titlecolor: white
+	xmax: 16
+	xmin: 0
+	xticsfont: Times
+	xticssize: 10
+	ymax: 0.314
+	ymin: 0
+	yticsfont: Times
+	yticssize: 10
+End
+Plot: Inconel EnergyDep Electrons
+	Type: USRBIN
+	cbcpd: 0
+	cblog: 1
+	cbmax: 545
+	cbmin: 5
+	cbpalette: matlab
+	cbtics: 1
+	datafile: Axisymmetric_Mesh_52.bnn
+	det: 3
+	grid: 0
+	group: Inconel Energy Dep Diff Particles
+	hist: 2D Projection
+	norm: 1.6e-10*1e13
+	proj: Y
+	title: Energy Deposited to the Inconel Target by Electrons
+	titlecolor: white
+	xmax: 16
+	xmin: 0
+	xticsfont: Times
+	xticssize: 10
+	ymax: 0.314
+	ymin: 0
+	yticsfont: Times
+	yticssize: 10
+End
+Plot: Inconel EnergyDep Photons
+	Type: USRBIN
+	cbcpd: 0
+	cblog: 1
+	cbmax: 545
+	cbmin: 5
+	cbpalette: matlab
+	cbtics: 1
+	datafile: Axisymmetric_Mesh_52.bnn
+	det: 4
+	grid: 0
+	group: Inconel Energy Dep Diff Particles
+	hist: 2D Projection
+	norm: 1.6e-10*1e13
+	proj: Y
+	title: Energy Deposited to the Inconel Target by Photons
+	titlecolor: white
+	xmax: 16
+	xmin: 0
+	xticsfont: Times
+	xticssize: 10
+	ymax: 0.314
+	ymin: 0
+	yticsfont: Times
+	yticssize: 10
+End
+Plot: Inconel EnergyDep HeavyIons
+	Type: USRBIN
+	cbcpd: 0
+	cblog: 1
+	cbpalette: matlab
+	cbtics: 1
+	datafile: Axisymmetric_Mesh_52.bnn
+	det: 5
+	grid: 0
+	group: Inconel Energy Dep Diff Particles
+	hist: 2D Projection
+	norm: 1.6e-10*1e13
+	proj: Y
+	title: Energy Deposited to the Tungsten Target by Heavy Ions
+	titlecolor: white
+	xmax: 16
+	xmin: 0
+	xticsfont: Times
+	xticssize: 10
+	ymax: 0.314
+	ymin: 0
+	yticsfont: Times
+	yticssize: 10
+End
+Plot: Inconel EnergyDep LightIons
+	Type: USRBIN
+	cbcpd: 0
+	cblog: 1
+	cbpalette: matlab
+	cbtics: 1
+	datafile: Axisymmetric_Mesh_54.bnn
+	grid: 0
+	group: Inconel Energy Dep Diff Particles
+	hist: 1D Projection
+	norm: 1.6e-10*1e13
+	title: Energy Deposited to the Tungsten Target by Light Ions
+	titlecolor: white
+	xmax: 16
+	xmin: 0
+	xticsfont: Times
+	xticssize: 10
+	yticsfont: Times
+	yticssize: 10
+End
+Plot: Graphite EnergyDep Protons
+	Type: USRBIN
+	cbcpd: 0
+	cblog: 1
+	cbmax: 120
+	cbmin: 0.4
+	cbpalette: matlab
+	cbtics: 1
+	datafile: Axisymmetric_Mesh_53.bnn
+	grid: 0
+	group: Geaphite Energy Dep Diff Particles
+	hist: 2D Projection
+	norm: 1.6e-10*1e13
+	proj: Y
+	title: Energy Deposited to the Graphite Target by Protons
+	titlecolor: white
+	xmax: 16
+	xmin: 0
+	xticsfont: Times
+	xticssize: 10
+	ymax: 0.314
+	ymin: 0
+	yticsfont: Times
+	yticssize: 10
+End
+Plot: Graphite EnergyDep Beam Protons
+	Type: USRBIN
+	cbcpd: 0
+	cblog: 1
+	cbmax: 120
+	cbmin: 0.4
+	cbpalette: matlab
+	cbtics: 1
+	datafile: Axisymmetric_Mesh_53.bnn
+	det: 6
+	grid: 0
+	group: Geaphite Energy Dep Diff Particles
+	hist: 2D Projection
+	norm: 1.6e-10*1e13
+	proj: Y
+	title: Energy Deposited to the Graphite Target by Beam Protons
+	titlecolor: white
+	xmax: 16
+	xmin: 0
+	xticsfont: Times
+	xticssize: 10
+	ymax: 0.314
+	ymin: 0
+	yticsfont: Times
+	yticssize: 10
+End
+Plot: Graphite EnergyDep Neutrons
+	Type: USRBIN
+	cbcpd: 0
+	cblog: 1
+	cbpalette: matlab
+	cbtics: 1
+	datafile: Axisymmetric_Mesh_53.bnn
+	det: 2
+	grid: 0
+	group: Geaphite Energy Dep Diff Particles
+	hist: 2D Projection
+	norm: 1.6e-10*1e13
+	proj: Y
+	title: Energy Deposited to the Graphite Target by Neutrons
+	titlecolor: white
+	xmax: 16
+	xmin: 0
+	xticsfont: Times
+	xticssize: 10
+	ymax: 0.314
+	ymin: 0
+	yticsfont: Times
+	yticssize: 10
+End
+Plot: Graphite EnergyDep Electrons
+	Type: USRBIN
+	cbcpd: 0
+	cblog: 1
+	cbmax: 120
+	cbmin: 0.4
+	cbpalette: matlab
+	cbtics: 1
+	datafile: Axisymmetric_Mesh_53.bnn
+	det: 3
+	grid: 0
+	group: Geaphite Energy Dep Diff Particles
+	hist: 2D Projection
+	norm: 1.6e-10*1e13
+	proj: Y
+	title: Energy Deposited to the Graphite Target by Electrons
+	titlecolor: white
+	xmax: 16
+	xmin: 0
+	xticsfont: Times
+	xticssize: 10
+	ymax: 0.314
+	ymin: 0
+	yticsfont: Times
+	yticssize: 10
+End
+Plot: Graphite EnergyDep Photons
+	Type: USRBIN
+	cbcpd: 0
+	cblog: 1
+	cbpalette: matlab
+	cbtics: 1
+	datafile: Axisymmetric_Mesh_53.bnn
+	det: 4
+	grid: 0
+	group: Geaphite Energy Dep Diff Particles
+	hist: 2D Projection
+	norm: 1.6e-10*1e13
+	proj: Y
+	title: Energy Deposited to the Graphite Target by Photons
+	titlecolor: white
+	xmax: 16
+	xmin: 0
+	xticsfont: Times
+	xticssize: 10
+	ymax: 0.314
+	ymin: 0
+	yticsfont: Times
+	yticssize: 10
+End
+Plot: Graphite EnergyDep Early Mix Ions
+	Type: USRBIN
+	cbcpd: 0
+	cblog: 1
+	cbpalette: matlab
+	cbtics: 1
+	datafile: Axisymmetric_Mesh_53.bnn
+	det: 5
+	grid: 0
+	group: Geaphite Energy Dep Diff Particles
+	hist: 2D Projection
+	norm: 1.6e-10*1e13
+	proj: Y
+	title: Energy Deposited to the Graphite Target by Heavy Ions
+	titlecolor: white
+	xmax: 16
+	xmin: 0
+	xticsfont: Times
+	xticssize: 10
+	ymax: 0.314
+	ymin: 0
+	yticsfont: Times
+	yticssize: 10
+End
+Plot: Graphite EnergyDep Heavy Ions
+	Type: USRBIN
+	cbcpd: 0
+	cblog: 1
+	cbpalette: matlab
+	cbtics: 1
+	datafile: Axisymmetric_Mesh_60.bnn
+	det: 5
+	grid: 0
+	group: Geaphite Energy Dep Diff Particles
+	hist: 2D Projection
+	norm: 1.6e-10*1e13
+	proj: Y
+	title: Energy Deposited to the Graphite Target by Heavy Ions
+	titlecolor: white
+	xmax: 16
+	xmin: 0
+	xticsfont: Times
+	xticssize: 10
+	ymax: 0.314
+	ymin: 0
+	yticsfont: Times
+	yticssize: 10
+End
+Plot: Graphite EnergyDep Deutron Ions
+	Type: USRBIN
+	cbcpd: 0
+	cblog: 1
+	cbpalette: matlab
+	cbtics: 1
+	datafile: Axisymmetric_Mesh_60.bnn
+	grid: 0
+	group: Geaphite Energy Dep Diff Particles
+	hist: 2D Projection
+	norm: 1.6e-10*1e13
+	proj: Y
+	title: Energy Deposited to the Graphite Target by Heavy Ions
+	titlecolor: white
+	xmax: 16
+	xmin: 0
+	xticsfont: Times
+	xticssize: 10
+	ymax: 0.314
+	ymin: 0
+	yticsfont: Times
+	yticssize: 10
+End
+Plot: Graphite EnergyDep Triton Ions
+	Type: USRBIN
+	cbcpd: 0
+	cblog: 1
+	cbpalette: matlab
+	cbtics: 1
+	datafile: Axisymmetric_Mesh_60.bnn
+	det: 2
+	grid: 0
+	group: Geaphite Energy Dep Diff Particles
+	hist: 2D Projection
+	norm: 1.6e-10*1e13
+	proj: Y
+	title: Energy Deposited to the Graphite Target by Heavy Ions
+	titlecolor: white
+	xmax: 16
+	xmin: 0
+	xticsfont: Times
+	xticssize: 10
+	ymax: 0.314
+	ymin: 0
+	yticsfont: Times
+	yticssize: 10
+End
+Plot: Graphite EnergyDep Helium-4 Ions
+	Type: USRBIN
+	cbcpd: 0
+	cblog: 1
+	cbpalette: matlab
+	cbtics: 1
+	datafile: Axisymmetric_Mesh_60.bnn
+	det: 3
+	grid: 0
+	group: Geaphite Energy Dep Diff Particles
+	hist: 2D Projection
+	norm: 1.6e-10*1e13
+	proj: Y
+	title: Energy Deposited to the Graphite Target by Heavy Ions
+	titlecolor: white
+	xmax: 16
+	xmin: 0
+	xticsfont: Times
+	xticssize: 10
+	ymax: 0.314
+	ymin: 0
+	yticsfont: Times
+	yticssize: 10
+End
+Plot: Graphite EnergyDep Helium-3 Ions
+	Type: USRBIN
+	cbcpd: 0
+	cblog: 1
+	cbpalette: matlab
+	cbtics: 1
+	datafile: Axisymmetric_Mesh_60.bnn
+	det: 4
+	grid: 0
+	group: Geaphite Energy Dep Diff Particles
+	hist: 2D Projection
+	norm: 1.6e-10*1e13
+	proj: Y
+	title: Energy Deposited to the Graphite Target by Light Ions
+	titlecolor: white
+	xmax: 16
+	xmin: 0
+	xticsfont: Times
+	xticssize: 10
+	ymax: 0.314
+	ymin: 0
+	yticsfont: Times
+	yticssize: 10
+End
