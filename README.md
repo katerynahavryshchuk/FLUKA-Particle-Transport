@@ -4,9 +4,9 @@
 
 <h2>Description</h2>
 The attached files enable simulation of the Mu2e proton beam on a cylindrical target. The target material is set to Tungsten, but it can be changed to Inconel-718 (defined in .inp), Graphite (default in FLUKA), or any other material in the FLUKA material library. The target has a radius of 0.314 cm and a length of 16 cm. The beam travels along the cylindrical axis, as can be verified in FLAIR's graphical geometry editor: <br/>
-<img src="https://i.imgur.com/uLQVz8r.png" height="50%" width="50%" alt="Mu2e Target Model"/>
+<img src="https://i.imgur.com/uLQVz8r.png" height="80%" width="80%" alt="Mu2e Target Model"/>
 The meshing is chosen to give a satisfactory error (below 5%) for the given number of primaries per cycle (200,000 with 5 cycles total): <br/>
-<img src="https://i.imgur.com/AaAKaPr.png" height="50%" width="50%" alt="Mu2e Target Model"/>
+<img src="https://i.imgur.com/AaAKaPr.png" height="80%" width="80%" alt="Mu2e Target Model Meshing"/>
 
 <h2>Included Scorings</h2>
 
@@ -23,7 +23,10 @@ The meshing is chosen to give a satisfactory error (below 5%) for the given numb
   - Athermal Recombination Corrected (ARC)
 
 <h2>Post-Processing</h2>
-For post-processing tools, see the FLUKA Post-Processing repository. 
+FLAIR provides built-in post-processing tools that allow for quick 2D and 1D plotting of FLUKA outputs. Some examples: <br/> 
+<img src="https://i.imgur.com/KVr7KxF.png" height="80%" width="80%" alt="Energy Deposition in Tungsten"/> 
+<img src="https://i.imgur.com/J6wmqPO.png" height="80%" width="80%" alt="Maximum Energy Deposition in Tungsten"/>
+However, manipulating data in FLAIR is rather inconvenient. For additional post-processing tools, see the FLUKA Post-Processing repository. 
 <!--
  ```diff
 - text in red
